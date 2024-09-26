@@ -46,7 +46,6 @@
 
     <form method="post">
         <input type="text" name="letra" id="letra" maxlength="1">
-        <input type="hidden" name="arrayGuions" value="<?php echo implode(",", $arrayGuions); ?>">
         <input type="submit" value="Enviar">
     </form>
 
