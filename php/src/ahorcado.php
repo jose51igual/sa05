@@ -16,7 +16,7 @@
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $lletra = htmlspecialchars($_POST['letra']);
-    
+
         $longitud = strlen(PARAULA);
 
         $arrayGuions = [];
@@ -25,11 +25,11 @@
         $arrayGuions[] = '_';
         }
 
-        imprimir($arrayGuions);
-
         $bool = comprovarIntents(PARAULA , $lletra, $arrayGuions);
 
+        imprimir($arrayGuions);
 
+    
         if($lletra != null){
             if($bool){
                 echo "<p style=\"color: green;\">La letra $lletra es correcta</p><br>";
@@ -46,6 +46,7 @@
 
     <form method="post">
         <input type="text" name="letra" id="letra" maxlength="1">
+        <input type="hidden" name="arrayGuions" value="<?php echo implode(",", $arrayGuions); ?>">
         <input type="submit" value="Enviar">
     </form>
 
