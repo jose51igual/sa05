@@ -67,18 +67,21 @@
 
         if($_SERVER["REQUEST_METHOD"] == "POST"){
             
-            if (isset($_POST['tirada'])) {
-            $tirada = htmlspecialchars($_POST['tirada']);
-            }else{
-                echo "<p>Introduce un numero antes de enviar!</p>";
+            if (isset($_POST['tirada']) && $_POST['tirada'] !== '') {
+                $tirada = htmlspecialchars($_POST['tirada']);
+                
+                if ($tirada >= 0 && $tirada <= 6) {
+                    if (isset($_POST['jugador'])) {
+                        $jugadorActual = $_POST['jugador'];
+                        ferMoviment($graella, $tirada, $jugadorActual);
+                    }
+                } else {
+                    echo "<p>Introduce un número válido entre 0 y 6.</p>";
+                }
+            } else {
+                echo "<p>Introduce un número antes de enviar!</p>";
             }
-
-            if (isset($_POST['jugador'])) {
-            $jugadorActual = $_POST['jugador'];
-            }
-
-            ferMoviment($graella, $tirada, $jugadorActual);
-        } 
+        }
 
     
         pintarGraella($graella);
