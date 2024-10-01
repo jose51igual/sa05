@@ -19,6 +19,8 @@
 
         $longitud = strlen(PARAULA);
 
+        $arrayFallos = [];
+
         $arrayGuions = [];
 
         for($i = 0; $i < $longitud; $i++){
@@ -38,6 +40,8 @@
                 imprimir($arrayGuions);
             }else{
                 echo "<p style=\"color: red;\">La letra $lletra es incorrecta</p>";
+                $arrayFallos[] = $lletra;
+                imprimir($arrayFallos);
             }
         }
         
