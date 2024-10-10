@@ -17,4 +17,19 @@ function comprovarIntents($paraula , $lletra , &$arrayGuions){
     return $bool;
 }
 
+function comprobarWin($arrayGuions,$paraula){
+    $bool = true;
+    for($i = 0; $i < strlen($paraula); $i++){
+        if(strtolower($arrayGuions[$i]) != strtolower($paraula[$i])){
+            $bool = false;
+        }
+    }
+    return $bool;
+}
+
+function reiniciarJoc(){
+    $_SESSION['fallos'] = [];
+    $_SESSION['guions'] = array_fill(0,strlen($_SESSION['paraula']),'_');
+    $_SESSION['lletra'] = [];
+}
 ?>

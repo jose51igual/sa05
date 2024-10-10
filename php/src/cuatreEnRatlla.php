@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['nom_usuari'])) {
+    header('Location: auth/login.php');
+    exit();
+}
+
+$nomUsuari = $_SESSION['nom_usuari'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,6 +108,6 @@
             <input type="radio" name="jugador" value="player2">Jugador 2
         </label>
     </form>
-    
+    <a href="auth/logout.php">Cerrar sesion</a>
 </body>
 </html>
