@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Iniciar Sessió</title>
 </head>
 <body>
-    <h2>Iniciar Sessió</h2>
+    <h2>Inicia Sessió <?= isset($_COOKIE['user']) ? $cookieNom : '' ?></h2>
     <form method="post" action="login.php">
         <label for="nom_usuari">Nom d'usuari:</label>
         <input type="text" id="nom_usuari" name="nom_usuari" value="<?php echo $cookieNom; ?>" required> <!-- Cambiado aquí -->

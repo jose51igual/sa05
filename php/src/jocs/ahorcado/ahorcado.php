@@ -29,10 +29,7 @@ inicialitzarJoc();
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST['reiniciar'])) {
-            unset($_SESSION['guions']);
-            unset($_SESSION['intents']);
-            unset($_SESSION['fallos']);
-            inicialitzarJoc();
+            reiniciarJoc();
         } elseif (isset($_POST['letra']) && !empty($_POST['letra'])) {
             $lletra = $_POST['letra'];
             $_SESSION['lletra'] = $lletra;
@@ -54,30 +51,29 @@ inicialitzarJoc();
             }
         }
     }
+
+    if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action']) && $_GET['action'] == 'restart') {
+        reiniciarJoc();
+    }
     ?>
 
-    <form method="post">
 <?php
-if (!comprobarWin($_SESSION['guions']) && $_SESSION['intents'] > 0) {
+    if (!comprobarWin($_SESSION['guions']) && $_SESSION['intents'] > 0) {
 ?>
+    <form method="post">
         <input type="text" name="letra" id="letra" maxlength="1">
         <input type="submit" value="Enviar">
-<?php
-} elseif ($_SESSION['intents'] == 0) {
-    echo "<p>¡Has perdido! La palabra era: {$_SESSION['paraula']}</p>";
-?>
-        <input type="hidden" name="reiniciar" value="1">
-        <input type="submit" value="Reiniciar Juego">
-<?php
-} else {
-    echo "<p>¡Has ganado!</p>";
-?>
-        <input type="hidden" name="reiniciar" value="1">
-        <input type="submit" value="Reiniciar Juego">
-<?php
-}
-?>
+        <p>Intentos restantes: <?php echo $_SESSION['intents']; ?></p>
     </form>
+<?php
+    } elseif ($_SESSION['intents'] == 0) {
+    echo "<p>¡Has perdido! La palabra era: {$_SESSION['paraula']}</p>";
+    } else {
+    echo "<p>¡Has ganado!</p>";
+    }
+?>
+    
     <a href="../../auth/logout.php">Cerrar sesion</a>
+    <a href="?action=restart">Reiniciar Juego</a>
 </body>
 </html>

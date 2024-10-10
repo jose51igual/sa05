@@ -39,4 +39,11 @@ function comprobarWin($arrayGuions) {
     return true;
 }
 
+function reiniciarJoc(){
+    unset($_SESSION['guions']);
+    unset($_SESSION['intents']);
+    unset($_SESSION['fallos']);
+    inicialitzarJoc();
+}
+
 ?>
