@@ -12,6 +12,10 @@ $nomUsuari = $_SESSION['nom_usuari'];
 if(!isset($_SESSION['graella'])){
     $_SESSION['graella'] = inicialitzarGraella();
 }
+
+if(!isset($_SESSION['jugador'])){
+    $_SESSION['jugador'] = 'player1';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,62 +29,75 @@ if(!isset($_SESSION['graella'])){
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        border: 10px dotted #fff; /* Cercle amb punts blancs */
-        background-color: #000; /* Fons negre o pot ser un altre color */
+        border: 10px dotted #fff;
+        background-color: #000;
         display: inline-block;
         margin: 10px;
         color: white;
         font-size: 2rem;
-        text-align: center ;
+        text-align: center;
         vertical-align: middle;
     }
     .player1 {
-        background-color: red; /* Color vermell per un dels jugadors */
+        background-color: red;
     }
     .player2 {
-        background-color: yellow; /* Color groc per l'altre jugador */
+        background-color: yellow;
     }
     .buid {
-        background-color: white; /* Color blanc per cercles buits */
-        border-color: #000; /* Puntes negres per millor visibilitat */
-}
+        background-color: white;
+        border-color: #000;
+    }
     </style>
 </head>
 <body>
     <?php
+    if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action']) && $_GET['action'] == 'restart'){
+        $_SESSION['graella'] = inicialitzarGraella();
+        $_SESSION['jugador'] = 'player1';
+    }
 
-        if($_SERVER["REQUEST_METHOD"] == "POST"){
-            if (isset($_POST['tirada']) && $_POST['tirada'] !== '') {
-                $tirada = htmlspecialchars($_POST['tirada']);
-                $_SESSION['tirada'] = $tirada;
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+        if (isset($_POST['tirada']) && $_POST['tirada'] !== '') {
+            $tirada = htmlspecialchars($_POST['tirada']);
+            $_SESSION['tirada'] = $tirada;
+
+            if ($tirada >= 0 && $tirada <= 6) {
+                ferMoviment($_SESSION['graella'], $_SESSION['tirada'], $_SESSION['jugador']);
+
                 
-                if ($tirada >= 0 && $tirada <= 6) {
-                    if (isset($_POST['jugador'])) {
-                        $jugadorActual = $_POST['jugador'];
-                        $_SESSION['jugador'] = $jugadorActual;
-                        ferMoviment($_SESSION['graella'], $_SESSION['tirada'], $_SESSION['jugador']);
-                    }
+                if (comprobarCuatreEnRatlla($_SESSION['graella'])) {
+                    echo $_SESSION['jugador'] == 'player1' ? 'Jugador 1 (Rojo)' : 'Jugador 2 (Amarillo)' . ' ha ganado!';
                 } else {
-                    echo "<p>Introduce un número válido entre 0 y 6.</p>";
+                    if ($_SESSION['jugador'] == 'player1') {
+                        $_SESSION['jugador'] = 'player2';
+                    } else {
+                        $_SESSION['jugador'] = 'player1';
+                    }
                 }
             } else {
-                echo "<p>Introduce un número antes de enviar!</p>";
+                echo "<p>Introduce un número válido entre 0 y 6.</p>";
             }
+        } else {
+            echo "<p>Introduce un número antes de enviar!</p>";
         }
-        pintarGraella($_SESSION['graella']);
-    ?>
+    }
 
-    <h2>Introduce un numero (0-6)</h2>
+    pintarGraella($_SESSION['graella']);
+    ?>
+<?php
+if (!comprobarCuatreEnRatlla($_SESSION['graella'])){
+?>
+    <h2>Turno de <?= $_SESSION['jugador'] == 'player1' ? 'Jugador 1 (Rojo)' : 'Jugador 2 (Amarillo)' ?></h2>
+    <h2>Introduce un número (0-6)</h2>
     <form method="post">
         <input type="number" name="tirada" maxlength="1">
         <input type="submit" value="Enviar">
-        <label for="jugador">
-            <input type="radio" name="jugador" value="player1" checked>Jugador 1
-        </label>
-        <label for="jugador">
-            <input type="radio" name="jugador" value="player2">Jugador 2
-        </label>
     </form>
-    <a href="../../auth/logout.php">Cerrar sesion</a>
+<?php
+}
+?>
+    <a href="../../auth/logout.php">Cerrar sesión</a>
+    <a href="?action=restart">Reiniciar Juego</a>
 </body>
 </html>
