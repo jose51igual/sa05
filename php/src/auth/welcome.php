@@ -10,10 +10,10 @@ $nomUsuari = $_SESSION['nom_usuari'];
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     if (isset($_POST['ahorcado'])) {
-        header('Location: ../ahorcado.php');
+        header('Location: ./src/jocs/ahorcado.php');
         exit();
     } elseif (isset($_POST['ratlla'])) {
-        header('Location: ../cuatreEnRatlla.php');
+        header('Location: ./src/jocs/cuatreRatlla/cuatreEnRatlla.php');
         exit();
     }
 }

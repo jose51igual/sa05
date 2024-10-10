@@ -1,19 +1,24 @@
 <?php
 session_start();
+include_once("./functionsEnRatlla.php");
 
-if (!isset($_SESSION['nom_usuari'])) {
+if (!isset($_SESSION['nom_usuari']) && !isset($_SESSION['password'])) {
     header('Location: auth/login.php');
     exit();
 }
 
 $nomUsuari = $_SESSION['nom_usuari'];
+
+if(!isset($_SESSION['graella'])){  
+    $_SESSION['graella'] = inicialitzarGraella();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4 en Ratlla</title>
+    <title>Benvingut al 4 en Ratlla <?= $_SESSION['nom_usuari'] ?></title>
     <style>
     table { border-collapse: collapse; }
     td {
@@ -43,47 +48,17 @@ $nomUsuari = $_SESSION['nom_usuari'];
 </head>
 <body>
     <?php
-        function inicialitzarGraella(){
-            for($i = 0; $i < 6; $i++){
-                for($j = 0; $j < 7; $j++){
-                    $graella[$i][$j] = '';
-                }
-            }
-            return $graella;
-        }
-
-        function pintarGraella($graella){
-            echo "<table>";
-            foreach($graella as $fila){
-                echo "<tr>";
-                foreach($fila as $ficha){
-                    echo "<td class=\"$ficha\"></td>";
-                }
-                echo "</tr>";
-            }
-            echo "</table>";
-        }
-
-        function ferMoviment(&$graella, $columna, $jugadorActual){
-            for($i = count($graella) -1; $i >= 0; $i--){
-                if($graella[$i][$columna] == ''){
-                    $graella[$i][$columna] = "$jugadorActual";
-                    break;
-                }
-            }
-        }
-        
-        $graella = inicialitzarGraella();
 
         if($_SERVER["REQUEST_METHOD"] == "POST"){
-            
             if (isset($_POST['tirada']) && $_POST['tirada'] !== '') {
                 $tirada = htmlspecialchars($_POST['tirada']);
+                $_SESSION['tirada'] = $tirada;
                 
                 if ($tirada >= 0 && $tirada <= 6) {
                     if (isset($_POST['jugador'])) {
                         $jugadorActual = $_POST['jugador'];
-                        ferMoviment($graella, $tirada, $jugadorActual);
+                        $_SESSION['jugador'] = $jugadorActual;
+                        ferMoviment($_SESSION['graella'], $_SESSION['tirada'], $_SESSION['jugador']);
                     }
                 } else {
                     echo "<p>Introduce un número válido entre 0 y 6.</p>";
@@ -92,9 +67,7 @@ $nomUsuari = $_SESSION['nom_usuari'];
                 echo "<p>Introduce un número antes de enviar!</p>";
             }
         }
-
-    
-        pintarGraella($graella);
+        pintarGraella($_SESSION['graella']);
     ?>
 
     <h2>Introduce un numero (0-6)</h2>

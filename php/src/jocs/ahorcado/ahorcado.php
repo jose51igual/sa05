@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-include_once './functions.php';
+include_once './functionsAhorcado.php';
 
-if (!isset($_SESSION['nom_usuari'])) {
+if (!isset($_SESSION['nom_usuari']) && !isset($_SESSION['password'])) {
     header('Location: auth/login.php');
     exit();
 }
