@@ -9,7 +9,7 @@ if (!isset($_SESSION['nom_usuari']) && !isset($_SESSION['password'])) {
 
 $nomUsuari = $_SESSION['nom_usuari'];
 
-if(!isset($_SESSION['graella'])){  
+if(!isset($_SESSION['graella'])){
     $_SESSION['graella'] = inicialitzarGraella();
 }
 ?>
@@ -81,6 +81,6 @@ if(!isset($_SESSION['graella'])){
             <input type="radio" name="jugador" value="player2">Jugador 2
         </label>
     </form>
-    <a href="auth/logout.php">Cerrar sesion</a>
+    <a href="../../auth/logout.php">Cerrar sesion</a>
 </body>
 </html>

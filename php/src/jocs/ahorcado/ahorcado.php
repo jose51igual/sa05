@@ -10,12 +10,8 @@ if (!isset($_SESSION['nom_usuari']) && !isset($_SESSION['password'])) {
 
 define("PARAULA", "Teclado");
 $_SESSION['paraula'] = PARAULA;
-if(!isset($_SESSION['fallos'])){
-    $_SESSION['fallos'] = [];
-}
-if(!isset($_SESSION['guions'])){
-    $_SESSION['guions'] = array_fill(0,strlen($_SESSION['paraula']),'_');
-}
+
+inicialitzarJoc();
 ?>
 
 <!DOCTYPE html>
@@ -33,27 +29,28 @@ if(!isset($_SESSION['guions'])){
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST['reiniciar'])) {
-            reiniciarJoc();
-        }else{
-            $lletra = htmlspecialchars($_POST['letra']);
+            unset($_SESSION['guions']);
+            unset($_SESSION['intents']);
+            unset($_SESSION['fallos']);
+            inicialitzarJoc();
+        } elseif (isset($_POST['letra']) && !empty($_POST['letra'])) {
+            $lletra = $_POST['letra'];
             $_SESSION['lletra'] = $lletra;
 
             $bool = comprovarIntents($_SESSION['paraula'], $_SESSION['lletra'], $_SESSION['guions']);
 
             imprimir($_SESSION['guions']);
 
-            if($_SESSION['lletra'] != null){
-                if($bool){
-                    echo "<p style=\"color: green;\">La letra $lletra es correcta</p><br>";
-
-                    echo "<p>Progreso actual:</p><br>";
-                    imprimir($_SESSION['guions']);
-                }else{
-                    echo "<p style=\"color: red;\">La letra $lletra es incorrecta</p>";
-                    $_SESSION['fallos'][] = $_SESSION['lletra'];
-                    echo "<p>Letras incorrectas:</p>";
-                    imprimir($_SESSION['fallos']);
-                }
+            if ($bool) {
+                echo "<p style=\"color: green;\">La letra $lletra es correcta</p><br>";
+                echo "<p>Progreso actual:</p><br>";
+                imprimir($_SESSION['guions']);
+            } else {
+                echo "<p style=\"color: red;\">La letra $lletra es incorrecta</p>";
+                $_SESSION['fallos'][] = $_SESSION['lletra'];
+                echo "<p>Letras incorrectas:</p>";
+                imprimir($_SESSION['fallos']);
+                $_SESSION['intents']--;
             }
         }
     }
@@ -61,19 +58,26 @@ if(!isset($_SESSION['guions'])){
 
     <form method="post">
 <?php
-if(!comprobarWin($_SESSION['guions'], $_SESSION['paraula'])){
+if (!comprobarWin($_SESSION['guions']) && $_SESSION['intents'] > 0) {
 ?>
         <input type="text" name="letra" id="letra" maxlength="1">
         <input type="submit" value="Enviar">
 <?php
-}else{
+} elseif ($_SESSION['intents'] == 0) {
+    echo "<p>¡Has perdido! La palabra era: {$_SESSION['paraula']}</p>";
 ?>
         <input type="hidden" name="reiniciar" value="1">
         <input type="submit" value="Reiniciar Juego">
-    </form>
+<?php
+} else {
+    echo "<p>¡Has ganado!</p>";
+?>
+        <input type="hidden" name="reiniciar" value="1">
+        <input type="submit" value="Reiniciar Juego">
 <?php
 }
 ?>
-    <a href="auth/logout.php">Cerrar sesion</a>
+    </form>
+    <a href="../../auth/logout.php">Cerrar sesion</a>
 </body>
 </html>

@@ -1,15 +1,28 @@
 <?php
 
-function imprimir($arrayGuions){
-    foreach($arrayGuions as $lletra){
+function imprimir($arrayGuions) {
+    foreach ($arrayGuions as $lletra) {
         echo "$lletra ";
     }
 }
 
-function comprovarIntents($paraula , $lletra , &$arrayGuions){
+function inicialitzarJoc() {
+
+    if (!isset($_SESSION['fallos'])) {
+        $_SESSION['fallos'] = [];
+    }
+    if (!isset($_SESSION['guions'])) {
+        $_SESSION['guions'] = array_fill(0, strlen($_SESSION['paraula']), '_');
+    }
+    if (!isset($_SESSION['intents'])) {
+        $_SESSION['intents'] = 6;
+    }
+}
+
+function comprovarIntents($paraula, $lletra, &$arrayGuions) {
     $bool = false;
-    for($i = 0; $i < strlen($paraula); $i++){
-        if(strtolower($paraula[$i]) == strtolower($lletra)){
+    for ($i = 0; $i < strlen($paraula); $i++) {
+        if (strtolower($paraula[$i]) == strtolower($lletra)) {
             $arrayGuions[$i] = $lletra;
             $bool = true;
         }
@@ -17,19 +30,13 @@ function comprovarIntents($paraula , $lletra , &$arrayGuions){
     return $bool;
 }
 
-function comprobarWin($arrayGuions,$paraula){
-    $bool = true;
-    for($i = 0; $i < strlen($paraula); $i++){
-        if(strtolower($arrayGuions[$i]) != strtolower($paraula[$i])){
-            $bool = false;
+function comprobarWin($arrayGuions) {
+    foreach ($arrayGuions as $lletra) {
+        if ($lletra == '_') {
+            return false;
         }
     }
-    return $bool;
+    return true;
 }
 
-function reiniciarJoc(){
-    $_SESSION['fallos'] = [];
-    $_SESSION['guions'] = array_fill(0,strlen($_SESSION['paraula']),'_');
-    $_SESSION['lletra'] = [];
-}
 ?>
