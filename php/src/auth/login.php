@@ -32,22 +32,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Iniciar Sessió</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        input[type="text"],
+        input[type="password"] {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #007bff;
+        }
+        button {
+            padding: 10px;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        p {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h2>Inicia Sessió <?= isset($_COOKIE['user']) ? $cookieNom : '' ?></h2>
-    <form method="post" action="login.php">
-        <label for="nom_usuari">Nom d'usuari:</label>
-        <input type="text" id="nom_usuari" name="nom_usuari" value="<?php echo $cookieNom; ?>" required>
-        <br />
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required>
-        <br />
-        <button type="submit">Iniciar Sessió</button><br>
-        <label for="recordar">Recordar</label>
-        <input type="checkbox" id="recordar" name="recordar" <?php echo isset($_COOKIE['user']) ? 'checked' : ''; ?>>
-    </form>
+    <div class="login-container">
+        <h2>Iniciar Sesión <?= isset($_COOKIE['user']) ? $cookieNom : '' ?></h2>
+        <form method="post" action="login.php">
+            <label for="nom_usuari">Nombre de usuario:</label>
+            <input type="text" id="nom_usuari" name="nom_usuari" value="<?php echo $cookieNom; ?>" required>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Iniciar Sesión</button>
+            <div class="checkbox-container">
+                <label for="recordar">
+                    <input type="checkbox" id="recordar" name="recordar" <?php echo isset($_COOKIE['user']) ? 'checked' : ''; ?>>
+                    Recordar
+                </label>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
