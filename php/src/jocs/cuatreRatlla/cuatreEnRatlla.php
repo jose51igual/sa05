@@ -3,7 +3,7 @@ session_start();
 include_once("./functionsEnRatlla.php");
 
 if (!isset($_SESSION['nom_usuari']) && !isset($_SESSION['password'])) {
-    header('Location: auth/login.php');
+    header('Location: ../../auth/login.php');
     exit();
 }
 
