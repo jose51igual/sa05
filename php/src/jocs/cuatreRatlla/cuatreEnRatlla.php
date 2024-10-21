@@ -3,7 +3,7 @@ session_start();
 include_once("./functionsEnRatlla.php");
 
 if (!isset($_SESSION['nom_usuari']) && !isset($_SESSION['password'])) {
-    header('Location: ../../auth/login.php');
+    header('Location: ' . $_SERVER['DOCUMENT_ROOT'] . '/auth/login.php');
     exit();
 }
 
@@ -23,94 +23,7 @@ if(!isset($_SESSION['jugador'])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Benvingut al 4 en Ratlla <?= $_SESSION['nom_usuari'] ?></title>
-    <style>
-     body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f7f7f7;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        h2 {
-            font-size: 1.5rem;
-            color: #333;
-            margin: 10px 0;
-        }
-        table {
-            border-collapse: separate;
-            border-spacing: 5px;
-            margin: 20px auto;
-            background-color: #00509e;
-            padding: 15px;
-            border-radius: 15px;
-        }
-        td {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: #fff;
-            text-align: center;
-            vertical-align: middle;
-            box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.5);
-        }
-        .player1 {
-            background-color: #e63946; /* Rojo para Jugador 1 */
-            box-shadow: 0px 0px 10px rgba(230, 57, 70, 0.7);
-        }
-        .player2 {
-            background-color: #f1c40f; /* Amarillo para Jugador 2 */
-            box-shadow: 0px 0px 10px rgba(241, 196, 15, 0.7);
-        }
-        .buid {
-            background-color: #dfe6e9;
-        }
-        .controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-        input[type="number"] {
-            padding: 10px;
-            font-size: 1rem;
-            border: 2px solid #00509e;
-            border-radius: 5px;
-            width: 80px;
-            margin: 10px 0;
-            text-align: center;
-        }
-        input[type="submit"] {
-            padding: 10px 20px;
-            font-size: 1rem;
-            border: none;
-            background-color: #00509e;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        input[type="submit"]:hover {
-            background-color: #003f7d;
-        }
-        a {
-            display: inline-block;
-            margin-top: 10px;
-            font-size: 1rem;
-            color: #00509e;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        p {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles4Ralla.css">
 </head>
 <body>
     <?php
