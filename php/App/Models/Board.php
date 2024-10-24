@@ -129,4 +129,18 @@ class Board
         }
         return $count;
     }
+
+    /**
+     * Comprueba si el tablero está lleno.
+     *
+     * @return bool True si el tablero está lleno, false en caso contrario.
+     */
+    public function isFull(): bool {
+        for ($i = 0; $i < self::COLUMNS; $i++) {
+            if ($this->graella[0][$i] == '') {
+                return false;
+            }
+        }
+        return true;
+    }
 }

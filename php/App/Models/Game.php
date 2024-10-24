@@ -87,6 +87,18 @@ class Game
         return $this->scores;
     }
 
+    public function setScores($scores){
+        $this->scores = $scores;
+    }
+
+    private function addScore($request){
+        if($this->game->getPlayers()[1] === $request['winner']){
+            $this->game->setScores($request);
+        }else{
+            $this->game->setScores($request);
+        }
+    }
+
     /**
      * Reinicia el juego.
      *
