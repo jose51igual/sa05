@@ -31,14 +31,6 @@ td {
     vertical-align: middle;
     box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.5);
 }
-.player1 {
-    background-color: #e63946; /* Rojo para Jugador 1 */
-    box-shadow: 0px 0px 10px rgba(230, 57, 70, 0.7);
-}
-.player2 {
-    background-color: #f1c40f; /* Amarillo para Jugador 2 */
-    box-shadow: 0px 0px 10px rgba(241, 196, 15, 0.7);
-}
 .buid {
     background-color: #dfe6e9;
 }

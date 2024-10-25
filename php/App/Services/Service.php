@@ -1,5 +1,4 @@
 <?php
-
 namespace Joc4enRatlla\Services;
 
 class Service

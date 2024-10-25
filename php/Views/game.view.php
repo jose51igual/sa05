@@ -1,27 +1,20 @@
 <?php
-session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/../vendor/autoload.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/../Helpers/functions.php';
-use Joc4enRatlla\Controllers\GameController;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $gameController = new GameController($_POST); 
-} else {
-    loadView('jugador');
+// Verificar si la sesión ya está iniciada
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 ?>
-
 <html>
 <head>
     <link rel="stylesheet" href="4ratlla.css?v=<?php echo time(); ?>">
     <title>4 en ratlla</title>
     <style>
         .player1 {
-            background-color: <?= $players[1]->getColor() ?> ; /* Color vermell per un dels jugadors */
+            background-color: <?= $players[1]->getColor() ?> ; /* Color   per un dels jugadors */
         }
 
         .player2 {
-            background-color:  <?= $players[2]->getColor() ?>; /* Color groc per l'altre jugador */
+            background-color:  <?= $players[2]->getColor() ?>; /* Color   per l'altre jugador */
         }
 
     </style>
