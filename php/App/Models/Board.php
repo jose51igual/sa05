@@ -143,4 +143,8 @@ class Board
         }
         return true;
     }
+
+    public function getSlots(): array {
+        return $this->graella;
+    }
 }

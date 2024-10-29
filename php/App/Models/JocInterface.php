@@ -9,7 +9,6 @@ interface JocInterface {
     public function getNextPlayer(): int;
     public function reset(): void;
     public function play(int $columna): array;
-    public function playAutomatic(): void;
-    public function save(): void;
+    public function save() : string;
     public static function restore(): Game;
 }

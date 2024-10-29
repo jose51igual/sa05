@@ -1,7 +1,10 @@
 <?php
 namespace Joc4enRatlla\Controllers;
 
+use colorsIgualsException;
+use faltenDadesException;
 use Joc4enRatlla\Models\Player;
+use nomsIgualsException;
 
 class JugadorController {
     private array $players;
@@ -15,41 +18,51 @@ class JugadorController {
         }
     }
 
-    public function setPlayers(array $request) {
-        if ($_SERVER['REQUEST_METHOD'] === 'GET' || $request === null || isset($request['user'])) {
-            loadView('jugador'); 
+    /**
+     * Guarda los jugadores en la sesión.
+     * 
+     * @param array $request Los datos de la petición.
+     * 
+     * @throws faltenDadesException Si no se han enviado los datos necesarios.
+     * 
+     * @throws colorsIgualsException Si los colores de los jugadores son iguales.
+     * 
+     * @throws nomsIgualsException Si los nombres de los jugadores son iguales.
+     * 
+     * @return void
+     */
+    public function setPlayers(array $request = null) : void {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' || !$request) {
+            loadView('jugador');
             return;
         }
-
-        $this->comprobaciones($request);
-
+       try {
+            if(empty($request['player1']) || empty($request['player2']) || !isset($request['player1']) || !isset($request['player2'])){
+                throw new faltenDadesException();
+            }
+            if($request['player1-color'] === $request['player2-color']){
+                throw new colorsIgualsException();
+            }
+            if($request['player1'] === $request['player2']){
+                throw new nomsIgualsException();
+            }
+        } catch (faltenDadesException | colorsIgualsException | nomsIgualsException $e) {
+            $_SESSION['errors'][] = $e->getMessage();
+            return;
+        }
         $this->players = [
             'player1' => new Player(
-                $request['player1'] ?? 'Player 1',
-                $request['player1-color'] ?? 'red'
+                (isset($request['player1']) ? $request['player1'] : 'Player 1'),
+                (isset($request['player1-color']) ? $request['player1-color'] : 'red'),
             ),
             'player2' => new Player(
-                $request['player2'] ?? 'Player 2',
-                $request['player2-color'] ?? 'yellow',
-                isset($request['player2-ia']) && $request['player2-ia'] === 'true'
-            )
+                (isset($request['player2']) ? $request['player2'] : 'Player 3'),
+                (isset($request['player2-color'])? $request['player2-color'] : 'yellow'),
+                ((isset($request['player2-ia']) && $request['player2-ia'] === 'true') ? true : false),
+                )
         ];
-
         $_SESSION['players'] = serialize($this->players);
-    }
-
-    private function comprobaciones(array $request) {
-        if(!isset($request['player1']) || !isset($request['player2']) || !isset($request['player1-color']) || !isset($request['player2-color'])){
-            throw new \Exception('Error en el envío del formulari, falten dades');
-        }
-        if(empty($request['player1']) || empty($request['player2']) || empty($request['player1-color']) || empty($request['player2-color'])){
-            throw new \Exception('Error en el envío del formulari, falten dades o estan buides');
-        }
-        if($request['player1-color'] === $request['player2-color']){
-            throw new \Exception('Els colors dels jugadors han de ser diferents');
-        }
-        if($request['player1'] === $request['player2']){
-            throw new \Exception('Els noms dels jugadors han de ser diferents');
-        }
+        header('Location: /');
+        exit;
     }
 }

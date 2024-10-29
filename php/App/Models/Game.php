@@ -52,11 +52,17 @@ class Game implements JocInterface{
      * @param Player $jugador1 El primer jugador.
      * @param Player $jugador2 El segundo jugador.
      */
-    public function __construct( Player $jugador1, Player $jugador2){
+    public function __construct(Player $jugador1, Player $jugador2){
         $this->board = new Board();
-        $this->players = [$jugador1,$jugador2];
+        $this->players = [1 => $jugador1, 2 => $jugador2];
         $this->nextPlayer = 1;
         $this->winner = null;
+
+        if (isset($_SESSION['scores'])) {
+            $this->scores = $_SESSION['scores'];
+        } else {
+            $_SESSION['scores'] = $this->scores;
+        }
     }
 
     /**
@@ -99,8 +105,20 @@ class Game implements JocInterface{
         return $this->nextPlayer;
     }
 
+    /**
+     * Establece el ganador del juego.
+     * @param Player $winner El jugador ganador.
+     */
     public function setWinner($winner){
         $this->winner = $winner;
+    }
+
+    /**
+     * Establece las puntuaciones de los jugadores.
+     * @param int[] $scores Las puntuaciones de los jugadores.
+     */
+    public function setScores($scores){
+        $this->scores = $scores;
     }
 
     /**
@@ -123,8 +141,9 @@ class Game implements JocInterface{
     public function play($columna) : array {
         $coordenades = $this->board->setMovementOnBoard($columna, $this->nextPlayer);
         if ($this->board->checkWin($coordenades)) {
-            $this->winner = $this->players[$this->nextPlayer - 1];
+            $this->winner = $this->players[$this->nextPlayer];
             $this->scores[$this->nextPlayer]++;
+            $_SESSION['scores'] = $this->scores; // Actualizar los puntajes en la sesión
         }
         $this->nextPlayer = $this->nextPlayer === 1 ? 2 : 1;
         return $coordenades;
@@ -135,53 +154,53 @@ class Game implements JocInterface{
      *
      * @return void
      */
-    public function playAutomatic() : void {
+    public function playAutomatic(){
         $opponent = $this->nextPlayer === 1 ? 2 : 1;
 
-        for ($columna = 1; $columna <= Board::COLUMNS; $columna++) {
-            if ($this->board->isValidMove($columna)) {
+        for ($col = 0; $col <= Board::COLUMNS-1; $col++) {
+            if ($this->board->isValidMove($col)) {
                 $tempBoard = clone($this->board);
-                $coordenades = $tempBoard->setMovementOnBoard($columna, $this->nextPlayer);
+                $coord = $tempBoard->setMovementOnBoard($col, $this->nextPlayer);
 
-                if ($tempBoard->checkWin($coordenades)) {
-                    $this->play($columna);
-                    return;
+                if ($tempBoard->checkWin($coord)) {
+                    
+                    return $this->play($col);
                 }
             }
         }
 
-        for ($columna = 1; $columna <= Board::COLUMNS; $columna++) {
-            if ($this->board->isValidMove($columna)) {
+        for ($col = 0; $col <= Board::COLUMNS-1; $col++) {
+            if ($this->board->isValidMove($col)) {
                 $tempBoard = clone($this->board);
-                $coordenades = $tempBoard->setMovementOnBoard($columna, $opponent);
-                if ($tempBoard->checkWin($coordenades )) {
-                    $this->play($columna);
-                    return;
+                $coord = $tempBoard->setMovementOnBoard($col, $opponent);
+                if ($tempBoard->checkWin($coord )) {
+                    
+                    return $this->play($col);
                 }
             }
         }
 
         $possibles = array();
-        for ($columna = 1; $columna <= Board::COLUMNS; $columna++) {
-            if ($this->board->isValidMove($columna)) {
-                $possibles[] = $columna;
+        for ($col = 0; $col <= Board::COLUMNS-1; $col++) {
+            if ($this->board->isValidMove($col)) {
+                $possibles[] = $col;
             }
         }
+        $random = 0;
         if (count($possibles)>2) {
             $random = rand(-1,1);
         }
         $middle = (int) (count($possibles) / 2)+$random;
         $inthemiddle = $possibles[$middle];
-        $this->play($inthemiddle);
+        return $this->play($inthemiddle);
     }
     
     /**
      * Guarda el estado del juego en la sesión.
      *
-     * @return void
      */
-    public function save() : void {
-        $_SESSION['game'] = serialize($this);
+    public function save() : string{
+        return serialize($this);
     }
 
     /**

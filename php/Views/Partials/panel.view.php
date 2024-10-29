@@ -1,2 +1,2 @@
 <?php
-echo $players[1]->getName() . ' : ' . $players[1]->getPoints() . ' | ' . $players[2]->getPoints() . ' : ' . $players[2]->getName();
+echo $players[1]->getName() . ' : ' . $scores[1] . ' | ' . $scores[2] . ' : ' . $players[2]->getName();

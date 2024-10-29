@@ -1,12 +1,6 @@
-<?php
-// Verificar si la sesión ya está iniciada
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-?>
 <html>
 <head>
-    <link rel="stylesheet" href="4ratlla.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/4ratlla.css">
     <title>4 en ratlla</title>
     <style>
         .player1 {
@@ -20,12 +14,17 @@ if (session_status() === PHP_SESSION_NONE) {
     </style>
 </head>
 <body>
+    
 <?php include_once $_SERVER['DOCUMENT_ROOT'].'/../Views/partials/error.view.php'  ?>
  <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
     <?php include_once $_SERVER['DOCUMENT_ROOT'].'/../Views/partials/board.view.php'  ?>
-     <input type="submit" name="reset" value="Reiniciar joc">
-     <input type="submit" name="exit" value="Acabar joc">
+    
+</form>
+<form action="" method="GET">
+    <button type="submit" name="action" value="reset">Reiniciar joc</button>
+    <button type="submit" name="action" value="exit">Acabar joc</button>
 </form>
  <?php include_once $_SERVER['DOCUMENT_ROOT'].'/../Views/partials/panel.view.php'  ?>
+
 </body>
 </html>

@@ -2,7 +2,6 @@
 namespace Joc4enRatlla\Controllers;
 
 use Exception;
-require_once $_SERVER['DOCUMENT_ROOT'] . '/../Helpers/functionsController.php';
 use Joc4enRatlla\Models\Player;
 use Joc4enRatlla\Models\Game;
 use Joc4enRatlla\Models\Board;
@@ -37,9 +36,8 @@ class GameController{
      * 
      * @return void
      */
-    public function play(Array $request){
-        $this->startGame($request);
-        $this->setPlayers($request);
+    public function play(array $request){
+        $this->startGame();
         $this->newMovement($request);
 
         $board = $this->game->getBoard();
@@ -47,30 +45,32 @@ class GameController{
         $winner = $this->game->getWinner();
         $scores = $this->game->getScores();
 
+        $nextPlayer = $this->game->getNextPlayer();
+
         $_SESSION['game'] = $this->game->save();
-        loadView('index',compact('board','players','winner','scores'));
+        $_SESSION['scores'] = $scores;
+
+        loadView('game',compact('board','players','winner','scores','nextPlayer'));
     }
 
     /**
      * Inicia el juego.
      * 
-     * @param array $request Los datos de la petición.
-     * 
      * @return void
      */
-    private function startGame(Array $request){
+    private function startGame(){
         if(isset($_SESSION['game']) && isset($_SESSION['players'])){
             $this->game = Game::restore();
         }else{
-            $player1 = new Player('Jugador 1', 'red');
-            $player2 = new Player('Jugador 2', 'blue');
 
             if(isset($_SESSION['players'])){
                 $players = unserialize($_SESSION['players']);
                 $player1 = $players['player1'];
                 $player2 = $players['player2'];
+            }else{
+            $player1 = new Player('Jugador 1', 'red');
+            $player2 = new Player('Jugador 2', 'blue');
             }
-
             $this->game = new Game($player1, $player2);
         }
     }
@@ -82,9 +82,9 @@ class GameController{
      * 
      * @return void
      */
-    public function newMovement(Array $request) : void{
-        if(isset($request['column']) && is_numeric($request['column'])){
-            $column = $request['column'];
+    public function newMovement(array $request) : void{
+        if(isset($request['col']) && is_numeric($request['col'])){
+            $column = $request['col'];
 
             if (!isset($_SESSION['errors'])) {
                 $_SESSION['errors'] = [];
@@ -96,7 +96,7 @@ class GameController{
                 $_SESSION['errors'][] = 'Columna no valida';
             } else {
                 $coords = [];
-                if($this->game->getPlayers()[2]->IsAutomatic()){
+                if($this->game->getPlayers()[2]->isAutomatic()){
                     $coords = ($this->game->getNextPlayer() === 1) ? $this->game->play($column) : $this->game->playAutomatic();
                 } else {
                     $coords = $this->game->play($column);
@@ -106,39 +106,5 @@ class GameController{
                 }
             }
         }
-    }
-
-    /**
-     * Guarda los jugadores en la sesión.
-     * 
-     * @param array $request Los datos de la petición.
-     * 
-     * @throws Exception Si no se han enviado los datos necesarios.
-     * 
-     * @return void
-     */
-    public function setPlayers(Array $request) : void {
-        if ($_SERVER['REQUEST_METHOD'] === 'GET' || $request === null || isset($request['user'])) {
-            try {
-                loadView('player');
-            } catch (\Exception $e) {
-                $_SESSION['errors'][] = $e->getMessage();
-            }
-            //loadView('player'); 
-            return;
-        }
-        comprobaciones();
-        $players = [
-            'player1' => new Player(
-                (isset($request['player1']) ? $request['player1'] : 'Player 1'),
-                (isset($request['player1-color']) ? $request['player1-color'] : 'red'),
-            ),
-            'player2' => new Player(
-                (isset($request['player2']) ? $request['player2'] : 'Player 3'),
-                (isset($request['player2-color'])? $request['player2-color'] : 'yellow'),
-                ((isset($request['player2_isAutomatic']) && $request['player2_isAutomatic'] === 'true') ? true : false),
-                )
-        ];
-        $_SESSION['players'] = serialize($players);
     }
 }
