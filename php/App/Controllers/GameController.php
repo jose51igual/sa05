@@ -5,6 +5,9 @@ use Exception;
 use Joc4enRatlla\Models\Player;
 use Joc4enRatlla\Models\Game;
 use Joc4enRatlla\Models\Board;
+use Monolog\Level;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 /**
  * Clase GameController
@@ -20,12 +23,22 @@ class GameController{
      */
     private Game $game;
 
+    private Logger $logger;
+
+    private Logger $loggerErrors;
+
     /**
      * Constructor de la clase GameController.
      *
      * @param array $request Los datos de la petición.
      */
     public function __construct($request=null){
+        $this->logger = new Logger('loggerJuego');
+        $this->logger->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/game.log", Level::Info));
+        $this->logger->info("Inicializando GameController.");
+
+        $this->loggerErrors = new Logger('loggerErrores');
+        $this->loggerErrors->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/errors.log", Level::Error));
         $this->play($request);
     }
 
@@ -37,8 +50,14 @@ class GameController{
      * @return void
      */
     public function play(array $request){
+
         $this->startGame();
-        $this->newMovement($request);
+
+        try{
+            $this->newMovement($request);
+        }catch(Exception $e){
+            $this->loggerErrors->error($e->getMessage());
+        }
 
         $board = $this->game->getBoard();
         $players = $this->game->getPlayers();
@@ -59,6 +78,8 @@ class GameController{
      * @return void
      */
     private function startGame(){
+        $this->logger->info("Iniciando el juego...");
+
         if(isset($_SESSION['game']) && isset($_SESSION['players'])){
             $this->game = Game::restore();
         }else{
@@ -90,7 +111,9 @@ class GameController{
                 $_SESSION['errors'] = [];
             }
 
-            if(!$this->game->getBoard()->isValidMove($column)){
+            if ($this->game->getWinner() !== null) {
+                $_SESSION['errors'][] = 'El juego ya ha terminado.';
+            }elseif(!$this->game->getBoard()->isValidMove($column)){
                 $_SESSION['errors'][] = 'Columna plena';
             } elseif($column < 0 || $column > Board::COLUMNS-1){
                 $_SESSION['errors'][] = 'Columna no valida';
@@ -98,11 +121,14 @@ class GameController{
                 $coords = [];
                 if($this->game->getPlayers()[2]->isAutomatic()){
                     $coords = ($this->game->getNextPlayer() === 1) ? $this->game->play($column) : $this->game->playAutomatic();
+                    $this->logger->info('Jugador IA '.$this->game->getPlayers()[$this->game->getNextPlayer()]->getName().' ha jugado en la columna '.$column);
                 } else {
                     $coords = $this->game->play($column);
+                    $this->logger->info('Jugador '.$this->game->getPlayers()[$this->game->getNextPlayer()]->getName().' ha jugado en la columna '.$column);
                 }
                 if($this->game->getBoard()->checkWin($coords)){
                     $this->game->setWinner($this->game->getPlayers()[$this->game->getNextPlayer() === 1 ? 2 : 1]);
+                    $this->logger->info('Jugador '.$this->game->getPlayers()[$this->game->getNextPlayer() === 1 ? 2 : 1]->getName().' ha ganado');
                 }
             }
         }
