@@ -35,7 +35,6 @@ class GameController{
     public function __construct($request=null){
         $this->logger = new Logger('loggerJuego');
         $this->logger->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/game.log", Level::Info));
-        $this->logger->info("Inicializando GameController.");
 
         $this->loggerErrors = new Logger('loggerErrores');
         $this->loggerErrors->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/errors.log", Level::Error));
@@ -78,8 +77,6 @@ class GameController{
      * @return void
      */
     private function startGame(){
-        $this->logger->info("Iniciando el juego...");
-
         if(isset($_SESSION['game']) && isset($_SESSION['players'])){
             $this->game = Game::restore();
         }else{
@@ -121,7 +118,6 @@ class GameController{
                 $coords = [];
                 if($this->game->getPlayers()[2]->isAutomatic()){
                     $coords = ($this->game->getNextPlayer() === 1) ? $this->game->play($column) : $this->game->playAutomatic();
-                    $this->logger->info('Jugador IA '.$this->game->getPlayers()[$this->game->getNextPlayer()]->getName().' ha jugado en la columna '.$column);
                 } else {
                     $coords = $this->game->play($column);
                     $this->logger->info('Jugador '.$this->game->getPlayers()[$this->game->getNextPlayer()]->getName().' ha jugado en la columna '.$column);
