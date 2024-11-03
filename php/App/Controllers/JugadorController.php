@@ -9,13 +9,28 @@ use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
+/**
+ * Clase JugadorController
+ *
+ * Esta clase controla los jugadores del Cuatro en Ralla.
+ */
 class JugadorController {
+
+    /**
+     * Los jugadores del Cuatro en Ralla.
+     *
+     * @var array $players
+     */
     private array $players;
-    private $loggerErrors;
+
+    /**
+     * Logger de errores.
+     *
+     * @var Logger $loggerErrors
+     */
+    private Logger $loggerErrors;
 
     public function __construct($request = null) {
-
-
         $this->loggerErrors = new Logger('loggerErrores');
         $this->loggerErrors->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/errors.log", Level::Error));
         try {

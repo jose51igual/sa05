@@ -23,8 +23,18 @@ class GameController{
      */
     private Game $game;
 
+    /**
+     * Logger del juego.
+     *
+     * @var Logger $logger
+     */
     private Logger $logger;
 
+    /**
+     * Logger de errores.
+     *
+     * @var Logger $loggerErrors
+     */
     private Logger $loggerErrors;
 
     /**
@@ -110,10 +120,13 @@ class GameController{
 
             if ($this->game->getWinner() !== null) {
                 $_SESSION['errors'][] = 'El juego ya ha terminado.';
+                $this->loggerErrors->error('Intent de moviment después de que el joc haja acabat.');
             }elseif(!$this->game->getBoard()->isValidMove($column)){
                 $_SESSION['errors'][] = 'Columna plena';
+                $this->loggerErrors->error('Intent de moviment en una columna plena.');
             } elseif($column < 0 || $column > Board::COLUMNS-1){
                 $_SESSION['errors'][] = 'Columna no valida';
+                $this->loggerErrors->error('Intent de moviment en una columna no válida.');
             } else {
                 $coords = [];
                 if($this->game->getPlayers()[2]->isAutomatic()){
@@ -128,5 +141,14 @@ class GameController{
                 }
             }
         }
+    }
+
+    /**
+     * Devuelve el juego (Utilizado para los tests).
+     * 
+     * @return Game
+     */
+    public function getGame(){
+        return $this->game;
     }
 }
