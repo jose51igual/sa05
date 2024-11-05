@@ -115,6 +115,7 @@ class GameController{
      * @return void
      */
     public function newMovement(array $request) : void{
+
         if(isset($request['col']) && is_numeric($request['col'])){
             $column = $request['col'];
 
@@ -145,6 +146,7 @@ class GameController{
                 }
             }
         }
+        
     }
 
     /**

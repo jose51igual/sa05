@@ -29,7 +29,7 @@ class LoggingController {
 
     public function login(array $request = null) {
         if ($_SERVER['REQUEST_METHOD'] === 'GET' || !$request) {
-            Service::loadView('login');
+            loadView('login');
             return;
         }
 
@@ -44,7 +44,8 @@ class LoggingController {
                 if ($this->functionsDB->getUsuari($nomUsuari, $passwd)) {
                     $this->logger->info("User " . $nomUsuari . " logged in.");
 
-                    $_SESSION['user'] = $nomUsuari;
+                    $_SESSION['user']['nom'] = $nomUsuari;
+                    $_SESSION['user']['pass'] = $passwd;
                     if (isset($request['recordar'])) {
                         setcookie('user', $nomUsuari, time() + 3600, '/');
                     }
