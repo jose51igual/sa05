@@ -29,10 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 
 if(!isset($_SESSION['user'])){
     $loggingController = new LoggingController($_POST);
-    if (!isset($_SESSION['players']) && isset($_SESSION['user'])) {
-        $playerController = new JugadorController($_POST);
-    }else{
-        $gameController = new GameController($_POST);
-    }
+}
+if(!isset($_SESSION['players']) && isset($_SESSION['user'])) {
+    $playerController = new JugadorController($_POST);
+}
+if(!isset($_SESSION['game']) && isset($_SESSION['players'])){
+    $gameController = new GameController($_POST);
 }
 

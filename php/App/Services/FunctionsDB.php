@@ -2,6 +2,8 @@
 
 namespace Joc4enRatlla\Services;
 
+include_once __DIR__ . '/conf/conexion.php';
+
 use Joc4enRatlla\Models\Game;
 use Joc4enRatlla\Models\User;
 use PDO;
@@ -27,9 +29,15 @@ class FunctionsDB {
             $sentencia = $this->conexion->prepare("SELECT * FROM usuaris WHERE nom_usuari = :nom AND contrasenya = :pass");
             $sentencia->bindParam(':nom', $nomUsuari);
             $sentencia->bindParam(':pass', $password);
-            $sentencia->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, User::class);
             $sentencia->execute();
-            return $sentencia->fetch();
+            $sentencia->setFetchMode(PDO::FETCH_ASSOC);
+            $userData = $sentencia->fetch();
+
+            if ($userData) {
+                return new User($userData['id'], $userData['nom_usuari'], $userData['contrasenya']);
+            } else {
+                return null;
+            }
         } catch (PDOException $e) {
             $this->logger->error('Error recuperant l\'usuari: ' . $nomUsuari . $e->getMessage());
             return 'Error recuperant l\'usuari: ' . $e->getMessage();
@@ -64,22 +72,24 @@ class FunctionsDB {
     public function registro(User $user) {
         try {
             $sentencia = $this->conexion->prepare("SELECT COUNT(*) FROM usuaris WHERE nom_usuari = :nom");
-            $sentencia->bindParam(':nom', $user->getNom());
+            $nomUsuari = $user->getNom();
+            $sentencia->bindParam(':nom', $nomUsuari);
             $sentencia->execute();
             $count = $sentencia->fetchColumn();
 
-            if ($count > 0) {
+            if ($count == 0) {
+                $sentencia = $this->conexion->prepare("INSERT INTO usuaris (nom_usuari, contrasenya) VALUES (:nom, :pass)");
+                $nomUsuari = $user->getNom();
+                $password = $user->getContrasenya();
+                $sentencia->bindParam(':nom', $nomUsuari);
+                $sentencia->bindParam(':pass', $password);
+                return $sentencia->execute();
+            } else {
                 return false;
             }
-
-            $sentencia = $this->conexion->prepare("INSERT INTO usuaris (id, nom_usuari, contrasenya) VALUES (:id, :nom, :contrasenya)");
-            $sentencia->bindParam(':id', $user->getId());
-            $sentencia->bindParam(':nom', $user->getNom());
-            $sentencia->bindParam(':contrasenya', $user->getContrasenya());
-            return $sentencia->execute();
         } catch (PDOException $e) {
-            $this->logger->error('Error registrant l\'usuari: ' . $user->getNom() . $e->getMessage());
-            return 'Error registrant l\'usuari: ' . $e->getMessage();
+            $this->logger->error('Error registrant l\'usuari: ' . $e->getMessage());
+            return false;
         }
     }
 }

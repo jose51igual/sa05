@@ -6,7 +6,6 @@ use Joc4enRatlla\Models\User;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
-use PDO;
 use Joc4enRatlla\Services\FunctionsDB;
 
 class LoggingController {
@@ -19,12 +18,18 @@ class LoggingController {
         $this->functionsDB = new FunctionsDB();
         $this->logger = new Logger('loginLogger');
         $this->logger->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/login.log", Level::Info));
-        $this->login($request);
+        try{
+            $this->login($request);
+        }catch(\Throwable $th){
+            $this->logger->error($th->getMessage());
+            loadView('login');
+            return;
+        } 
     }
 
     public function login(array $request = null) {
         if ($_SERVER['REQUEST_METHOD'] === 'GET' || !$request) {
-            loadView('jugador');
+            Service::loadView('login');
             return;
         }
 
@@ -34,9 +39,9 @@ class LoggingController {
                 $passwd = htmlspecialchars($request['password']);
                 $this->logger->info("User " . $nomUsuari . " is trying to log in.");
 
-                $this->user = new User(1,$nomUsuari, $passwd);
+                $this->user = new User(1, $nomUsuari, $passwd);
 
-                if($this->functionsDB->getUsuari($nomUsuari, $passwd)) {
+                if ($this->functionsDB->getUsuari($nomUsuari, $passwd)) {
                     $this->logger->info("User " . $nomUsuari . " logged in.");
 
                     $_SESSION['user'] = $nomUsuari;
@@ -45,8 +50,8 @@ class LoggingController {
                     }
                     loadView('jugador');
                     exit();
-                }else{
-                    if($this->functionsDB->registro($this->user)){
+                } else {
+                    if ($this->functionsDB->registro($this->user)) {
                         $this->logger->info("User " . $nomUsuari . " registered.");
 
                         $_SESSION['user'] = $nomUsuari;
@@ -55,14 +60,19 @@ class LoggingController {
                         }
                         loadView('jugador');
                         exit();
-                    }else{
-                        echo "<p>Usuario o contraseña incorrectos</p>";
+                    } else {
+                        $this->logger->error("Error registering user " . $nomUsuari);
+                        $_SESSION['errors'][] = "Error registering user.";
+                        loadView('login');
+                        return;
                     }
                 }
-            }else {
-                echo "<p>Debes introducir un nombre y contraseña</p>";
+            } else {
+                $this->logger->error("Username or password not provided.");
+                $_SESSION['errors'][] = "Debes introducir un nombre de usuario y una contraseña.";
+                loadView('login');
+                return;
             }
         }
-        
     }
 }

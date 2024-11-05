@@ -7,9 +7,12 @@
     <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
+
+    <?php include_once $_SERVER['DOCUMENT_ROOT'] .'/../Views/partials/error.view.php'  ?>
+
     <div class="login-container">
         <h2>Iniciar Sesión <?= isset($_COOKIE['user']) ? $_COOKIE['user'] : ''; ?></h2>
-        <form method="post" action="login.php">
+        <form method="post" action="">
             <label for="nom_usuari">Nombre de usuario:</label>
             <input type="text" id="nom_usuari" name="nom_usuari" value="<?php if (isset($_COOKIE['user'])) {echo $_COOKIE['user'];} ?>" required>
             <label for="password">Contraseña:</label>

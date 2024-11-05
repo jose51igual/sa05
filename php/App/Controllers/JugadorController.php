@@ -36,6 +36,7 @@ class JugadorController {
         try {
             $this->setPlayers($request);
         } catch (\Throwable $th) {
+            $this->loggerErrors->error($th->getMessage());
             loadView('jugador'); 
             return;
         }
