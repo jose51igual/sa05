@@ -37,11 +37,13 @@ class LoggingController {
             if (isset($request['nom_usuari']) && $request['nom_usuari'] != "" && isset($request['password']) && $request['password'] != "") {
                 $nomUsuari = htmlspecialchars($request['nom_usuari']);
                 $passwd = htmlspecialchars($request['password']);
+                $hashPasswd = password_hash($passwd, PASSWORD_DEFAULT);
                 $this->logger->info("User " . $nomUsuari . " is trying to log in.");
 
-                $this->user = new User(1, $nomUsuari, $passwd);
 
-                if ($this->functionsDB->getUsuari($nomUsuari, $passwd)) {
+                $this->user = new User(1, $nomUsuari, $passwd);
+                $userDB = $this->functionsDB->getUsuari($nomUsuari, $passwd);
+                if (password_verify($hashPasswd, $userDB->getContrasenya())) {
                     $this->logger->info("User " . $nomUsuari . " logged in.");
 
                     $_SESSION['user']['nom'] = $nomUsuari;
