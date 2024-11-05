@@ -1,10 +1,10 @@
 <?php
 namespace Joc4enRatlla\Controllers;
 
-use colorsIgualsException;
-use faltenDadesException;
+use Joc4enRatlla\Exceptions\colorsIgualsException;
+use Joc4enRatlla\Exceptions\faltenDadesException;
 use Joc4enRatlla\Models\Player;
-use nomsIgualsException;
+use Joc4enRatlla\Exceptions\nomsIgualsException;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;

@@ -8,6 +8,7 @@ use Joc4enRatlla\Models\Board;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Joc4enRatlla\Services\FunctionsDB;
 
 /**
  * Clase GameController
@@ -22,6 +23,8 @@ class GameController{
      * @var Game
      */
     private Game $game;
+
+    private FunctionsDB $functionsDB;
 
     /**
      * Logger del juego.
@@ -48,6 +51,7 @@ class GameController{
 
         $this->loggerErrors = new Logger('loggerErrores');
         $this->loggerErrors->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/errors.log", Level::Error));
+        $this->functionsDB = new FunctionsDB();
         $this->play($request);
     }
 
@@ -150,5 +154,9 @@ class GameController{
      */
     public function getGame(){
         return $this->game;
+    }
+
+    public function saveGame($gameData, $userId) {
+        return $this->functionsDB->saveJoc($gameData, $userId);
     }
 }

@@ -21,8 +21,9 @@
     
 </form>
 <form action="" method="GET">
+    <button type="submit" name="action" value="save">Guardar partida</button>
     <button type="submit" name="action" value="reset">Reiniciar joc</button>
-    <button type="submit" name="action" value="exit">Acabar joc</button>
+    <button type="submit" name="action" value="exit">Tancar Sessió</button>
 </form>
  <?php include_once $_SERVER['DOCUMENT_ROOT'].'/../Views/partials/panel.view.php'  ?>
 

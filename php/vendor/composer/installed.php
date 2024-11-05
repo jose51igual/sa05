@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'joc4enratlla/joc4enratlla',
-        'pretty_version' => 'dev-develop',
-        'version' => 'dev-develop',
-        'reference' => '26f9c35c107a3e5d3796b2db4192fbf600b71c78',
+        'pretty_version' => '1.0.0+no-version-set',
+        'version' => '1.0.0.0',
+        'reference' => null,
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'joc4enratlla/joc4enratlla' => array(
-            'pretty_version' => 'dev-develop',
-            'version' => 'dev-develop',
-            'reference' => '26f9c35c107a3e5d3796b2db4192fbf600b71c78',
+            'pretty_version' => '1.0.0+no-version-set',
+            'version' => '1.0.0.0',
+            'reference' => null,
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
