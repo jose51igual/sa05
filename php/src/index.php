@@ -8,7 +8,6 @@ use Joc4enRatlla\Controllers\LoggingController;
 use Joc4enRatlla\Models\Game;
 use Joc4enRatlla\Services\FunctionsDB;
 
-// Manejo de acciones
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'exit':
@@ -23,20 +22,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
             $game = $_SESSION['game'];
             $user_id = $_SESSION['user']['id'];
             $functionsDB->saveJoc($game, $user_id);
+            setcookie('players', $_SESSION['players'], time() + 3600);
             echo '<h1>Partida guardada</h1>';
             break;
             case 'loadGame':
                 $functionsDB = new FunctionsDB();
                 $game = $functionsDB->getJoc($_SESSION['user']['id']);
                 if ($game) {
-                    $_SESSION['game'] = $game; 
-                    $players = $game->getPlayers(); 
-                    $player1 = $players['player1'];
-                    $player2 = $players['player2'];
-                    $_SESSION['players'] = serialize([
-                        'player1' => $player1,
-                        'player2' => $player2
-                    ]);
+                    $_SESSION['game'] = $game;
+                    $_SESSION['players'] = $_COOKIE['players'];
+                    
                 } else {
                     $_SESSION['errors'][] = 'No hay ninguna partida guardada';
                 }

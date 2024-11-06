@@ -14,3 +14,5 @@
 [2024-11-06T13:07:44.293899+00:00] loggerErrores.ERROR: Els noms dels jugadors han de ser diferents [] []
 [2024-11-06T13:13:18.009105+00:00] loggerErrores.ERROR: Els colors dels jugadors han de ser diferents [] []
 [2024-11-06T17:11:28.207917+00:00] loggerErrores.ERROR: Els noms dels jugadors han de ser diferents [] []
+[2024-11-06T18:48:01.944532+00:00] loggerErrores.ERROR: Error en el envío del formulari, falten dades [] []
+[2024-11-06T18:50:03.298507+00:00] loggerErrores.ERROR: Intent de moviment en una columna plena. [] []

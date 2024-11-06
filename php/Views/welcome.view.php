@@ -13,8 +13,8 @@
     <div class="welcome">
         <h2>Benvingut al Cuatre En Ratlla, <?= $_SESSION['user']['nom'] ?></h2>
         <form method="GET" action="">
-            <button type="submit" name="action" value="newGame">Iniciar Nova Partida</button>
-            <button type="submit" name="action" value="loadGame">Cargar Partida Existent</button>
+            <button type="submit" name="action" value="newGame">Nova Partida</button>
+            <button type="submit" name="action" value="loadGame">Cargar Partida</button>
         </form>
     </div>
 </body>
