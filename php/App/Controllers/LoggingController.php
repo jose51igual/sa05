@@ -35,26 +35,29 @@ class LoggingController {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($request['nom_usuari']) && $request['nom_usuari'] != "" && isset($request['password']) && $request['password'] != "") {
-                $nomUsuari = htmlspecialchars($request['nom_usuari']);
-                $passwd = htmlspecialchars($request['password']);
-                $hashPasswd = password_hash($passwd, PASSWORD_DEFAULT);
+                $nomUsuari = htmlspecialchars($request['nom_usuari']); 
+                $hashPasswd = password_hash(htmlspecialchars($request['password']), PASSWORD_DEFAULT);
                 $this->logger->info("User " . $nomUsuari . " is trying to log in.");
 
+                if($this->functionsDB->getUsuari($nomUsuari, $hashPasswd)){
+                    $userDB = $this->functionsDB->getUsuari($nomUsuari, $hashPasswd);
 
-                $this->user = new User(1, $nomUsuari, $passwd);
-                $userDB = $this->functionsDB->getUsuari($nomUsuari, $passwd);
-                if (password_verify($hashPasswd, $userDB->getContrasenya())) {
+                    if (password_verify($this->userDB->getContrasenya(), $hashPasswd )) {
                     $this->logger->info("User " . $nomUsuari . " logged in.");
 
                     $_SESSION['user']['nom'] = $nomUsuari;
                     $_SESSION['user']['pass'] = $passwd;
+
                     if (isset($request['recordar'])) {
                         setcookie('user', $nomUsuari, time() + 3600, '/');
+                        setcookie('user_id', $userDB->getId(), time() + 3600, '/');
                     }
+
                     loadView('jugador');
                     exit();
+                    }
                 } else {
-                    if ($this->functionsDB->registro($this->user)) {
+                    if ($this->functionsDB->registro($nomUsuari, $hashPasswd)) {
                         $this->logger->info("User " . $nomUsuari . " registered.");
 
                         $_SESSION['user'] = $nomUsuari;

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'joc4enratlla/joc4enratlla',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-develop',
+        'version' => 'dev-develop',
+        'reference' => '42ef965eec4010b69fb68df5e9d7196d87e66a57',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'joc4enratlla/joc4enratlla' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-develop',
+            'version' => 'dev-develop',
+            'reference' => '42ef965eec4010b69fb68df5e9d7196d87e66a57',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -161,9 +161,9 @@
             'dev_requirement' => true,
         ),
         'sebastian/comparator' => array(
-            'pretty_version' => '6.1.1',
-            'version' => '6.1.1.0',
-            'reference' => '5ef523a49ae7a302b87b2102b72b1eda8918d686',
+            'pretty_version' => '6.2.1',
+            'version' => '6.2.1.0',
+            'reference' => '43d129d6a0f81c78bee378b46688293eb7ea3739',
             'type' => 'library',
             'install_path' => __DIR__ . '/../sebastian/comparator',
             'aliases' => array(),

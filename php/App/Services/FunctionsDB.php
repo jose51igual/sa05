@@ -24,17 +24,16 @@ class FunctionsDB {
         $this->conexion = new PDO(DSN, USUARIO, PASSWORD);
     }
 
-    public function getUsuari($nomUsuari, $password) {
+    public function getUsuari($nomUsuari, $hashPasswd) {
         try {
-            $sentencia = $this->conexion->prepare("SELECT * FROM usuaris WHERE nom_usuari = :nom AND contrasenya = :pass");
+            $sentencia = $this->conexion->prepare("SELECT id, nom_usuari FROM usuaris WHERE nom_usuari = :nom AND contrasenya = :pass");
             $sentencia->bindParam(':nom', $nomUsuari);
-            $sentencia->bindParam(':pass', $password);
+            $sentencia->bindParam(':pass', $hashPasswd);
             $sentencia->execute();
-            $sentencia->setFetchMode(PDO::FETCH_ASSOC);
             $userData = $sentencia->fetch();
 
             if ($userData) {
-                return new User($userData['id'], $userData['nom_usuari'], $userData['contrasenya']);
+                return new User($userData['id'], $userData['nom_usuari']);
             } else {
                 return null;
             }
@@ -48,7 +47,6 @@ class FunctionsDB {
         try {
             $sentencia = $this->conexion->prepare("SELECT game FROM partides WHERE usuari_id = :id");
             $sentencia->bindParam(':id', $user_id);
-            $sentencia->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, Game::class);
             $sentencia->execute();
             return $sentencia->fetch();
         } catch (PDOException $e) {
@@ -69,20 +67,17 @@ class FunctionsDB {
         }
     }
 
-    public function registro(User $user) {
+    public function registro($nomUsuari, $hashPasswd) {
         try {
             $sentencia = $this->conexion->prepare("SELECT COUNT(*) FROM usuaris WHERE nom_usuari = :nom");
-            $nomUsuari = $user->getNom();
             $sentencia->bindParam(':nom', $nomUsuari);
             $sentencia->execute();
             $count = $sentencia->fetchColumn();
 
             if ($count == 0) {
                 $sentencia = $this->conexion->prepare("INSERT INTO usuaris (nom_usuari, contrasenya) VALUES (:nom, :pass)");
-                $nomUsuari = $user->getNom();
-                $password = $user->getContrasenya();
                 $sentencia->bindParam(':nom', $nomUsuari);
-                $sentencia->bindParam(':pass', $password);
+                $sentencia->bindParam(':pass', $hashPasswd);
                 return $sentencia->execute();
             } else {
                 return false;

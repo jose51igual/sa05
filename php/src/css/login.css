@@ -1,12 +1,11 @@
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f0f4f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    display: grid;
+    place-items: center;
     margin: 0;
 }
+
 .login-container {
     background-color: #ffffff;
     padding: 40px;
@@ -15,21 +14,25 @@ body {
     width: 300px;
     text-align: center;
 }
+
 h2 {
     margin-bottom: 20px;
     color: #333;
     font-size: 1.5rem;
 }
+
 form {
     display: flex;
     flex-direction: column;
 }
+
 label {
     font-size: 1rem;
     color: #333;
     margin-bottom: 5px;
     text-align: left;
 }
+
 input[type="text"],
 input[type="password"] {
     padding: 10px;
@@ -40,10 +43,12 @@ input[type="password"] {
     outline: none;
     transition: border-color 0.3s ease;
 }
+
 input[type="text"]:focus,
 input[type="password"]:focus {
     border-color: #007bff;
 }
+
 button {
     padding: 10px;
     font-size: 1rem;
@@ -54,19 +59,27 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 button:hover {
     background-color: #0056b3;
 }
+
 .checkbox-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 10px;
 }
+
 input[type="checkbox"] {
     margin-right: 5px;
 }
-p {
+
+.errors-array {
     color: red;
     font-weight: bold;
+    display: flex;
+    justify-content: center;
+    margin-top: 10%;
+
 }
