@@ -63,16 +63,15 @@ class JugadorController {
        try {
             if(empty($request['player1']) || empty($request['player2']) || !isset($request['player1']) || !isset($request['player2'])){
                 throw new faltenDadesException();
-            }
-            if($request['player1-color'] === $request['player2-color']){
+            }elseif($request['player1-color'] === $request['player2-color']){
                 throw new colorsIgualsException();
-            }
-            if($request['player1'] === $request['player2']){
+            }elseif($request['player1'] === $request['player2']){
                 throw new nomsIgualsException();
             }
         } catch (faltenDadesException | colorsIgualsException | nomsIgualsException $e) {
             $this->loggerErrors->error($e->getMessage());
             $_SESSION['errors'][] = $e->getMessage();
+            loadView('jugador');
             return;
         }
         $this->players = [

@@ -35,50 +35,48 @@ class LoggingController {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($request['nom_usuari']) && $request['nom_usuari'] != "" && isset($request['password']) && $request['password'] != "") {
-                $nomUsuari = htmlspecialchars($request['nom_usuari']); 
-                $hashPasswd = password_hash(htmlspecialchars($request['password']), PASSWORD_DEFAULT);
+                $nomUsuari = htmlspecialchars($request['nom_usuari']);
+                $password = htmlspecialchars($request['password']); 
                 $this->logger->info("User " . $nomUsuari . " is trying to log in.");
+                $userDB = $this->functionsDB->getUsuari($nomUsuari, $password);
 
-                if($this->functionsDB->getUsuari($nomUsuari, $hashPasswd)){
-                    $userDB = $this->functionsDB->getUsuari($nomUsuari, $hashPasswd);
-
-                    if (password_verify($this->userDB->getContrasenya(), $hashPasswd )) {
-                    $this->logger->info("User " . $nomUsuari . " logged in.");
-
-                    $_SESSION['user']['nom'] = $nomUsuari;
-                    $_SESSION['user']['pass'] = $passwd;
-
-                    if (isset($request['recordar'])) {
-                        setcookie('user', $nomUsuari, time() + 3600, '/');
-                        setcookie('user_id', $userDB->getId(), time() + 3600, '/');
-                    }
-
-                    loadView('jugador');
-                    exit();
-                    }
-                } else {
-                    if ($this->functionsDB->registro($nomUsuari, $hashPasswd)) {
+                if(!$userDB){
+                    $registro = $this->functionsDB->registro($nomUsuari, $password);
+                    if($registro){
+                        $userDB = $this->functionsDB->getUsuari($nomUsuari, $password);
                         $this->logger->info("User " . $nomUsuari . " registered.");
-
-                        $_SESSION['user'] = $nomUsuari;
+                        $_SESSION['user']['nom'] = $nomUsuari;
+                        $_SESSION['user']['id'] = intval($userDB->getId());
+                        $_SESSION['user']['passwd'] = $password;
                         if (isset($request['recordar'])) {
                             setcookie('user', $nomUsuari, time() + 3600, '/');
                         }
-                        loadView('jugador');
+                        loadView('welcome');
                         exit();
-                    } else {
-                        $this->logger->error("Error registering user " . $nomUsuari);
-                        $_SESSION['errors'][] = "Error registering user.";
-                        loadView('login');
-                        return;
                     }
+                    
+                }elseif ($userDB && password_verify($password, $userDB->getPasswd())) {
+                    $this->logger->info("User " . $nomUsuari . " logged in.");
+                    $_SESSION['user']['nom'] = $nomUsuari;
+                    $_SESSION['user']['id'] = intval($userDB->getId());
+                    $_SESSION['user']['passwd'] = $password;
+                    if (isset($request['recordar'])) {
+                        setcookie('user', $nomUsuari, time() + 3600, '/');
+                    }
+                    loadView('welcome');
+                    exit();
+                }else{
+                    $this->logger->error("Contrasenya Incorrecta: " . $nomUsuari);
+                    $_SESSION['errors'][] = "Contrasenya Incorrecta";
+                    loadView('login');
+                    return;
                 }
-            } else {
-                $this->logger->error("Username or password not provided.");
-                $_SESSION['errors'][] = "Debes introducir un nombre de usuario y una contraseña.";
-                loadView('login');
-                return;
             }
+        }else{
+            $this->logger->error("Username or password not provided.");
+            $_SESSION['errors'][] = "Debes introducir un nombre de usuario y una contraseña.";
+            loadView('login');
+            return;
         }
     }
 }

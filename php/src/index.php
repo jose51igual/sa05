@@ -5,34 +5,61 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/../Helpers/functions.php';
 use Joc4enRatlla\Controllers\GameController;
 use Joc4enRatlla\Controllers\JugadorController;
 use Joc4enRatlla\Controllers\LoggingController;
+use Joc4enRatlla\Models\Game;
+use Joc4enRatlla\Services\FunctionsDB;
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'exit') {
-    unset($_SESSION['game']);
-    unset($_SESSION['scores']);
-    unset($_SESSION['players']);
-    unset($_SESSION['user']);
-    header('Location: /');
-    exit;
-}elseif($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'reset'){
-    unset($_SESSION['game']);
-}elseif($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'save'){
-    if (isset($_SESSION['game']) && isset($_SESSION['user'])) {
-        $gameController = new GameController($_POST);
-        $result = $gameController->saveGame($_SESSION['game'], $_SESSION['user']->getId());
-        if ($result) {
-            echo "Partida guardada exitosamente.";
-        } else {
-            echo "Error al guardar la partida.";
-        }
+// Manejo de acciones
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
+    switch ($_GET['action']) {
+        case 'exit':
+            unset($_SESSION['game'], $_SESSION['scores'], $_SESSION['players'], $_SESSION['user']);
+            header('Location: /');
+            exit;
+        case 'reset':
+            unset($_SESSION['game']);
+            break;
+        case 'save':            
+            $functionsDB = new FunctionsDB();
+            $game = $_SESSION['game'];
+            $user_id = $_SESSION['user']['id'];
+            $functionsDB->saveJoc($game, $user_id);
+            echo '<h1>Partida guardada</h1>';
+            break;
+            case 'loadGame':
+                $functionsDB = new FunctionsDB();
+                $game = $functionsDB->getJoc($_SESSION['user']['id']);
+                if ($game) {
+                    $_SESSION['game'] = $game; 
+                    $players = $game->getPlayers(); 
+                    $player1 = $players['player1'];
+                    $player2 = $players['player2'];
+                    $_SESSION['players'] = serialize([
+                        'player1' => $player1,
+                        'player2' => $player2
+                    ]);
+                } else {
+                    $_SESSION['errors'][] = 'No hay ninguna partida guardada';
+                }
+                break;
+        case 'newGame':
+            unset($_SESSION['game'], $_SESSION['scores'], $_SESSION['players']);
+            break;
+        default:
+            break;
     }
 }
 
-if(!isset($_SESSION['user'])){
+
+if (!isset($_SESSION['user'])) {
     $loggingController = new LoggingController($_POST);
+    exit();
 }
-if(!isset($_SESSION['players']) && isset($_SESSION['user'])) {
+if (!isset($_SESSION['players']) && !isset($_SESSION['game'])) {
     $playerController = new JugadorController($_POST);
-}elseif(isset($_SESSION['players'])){
-    $gameController = new GameController($_POST);
+    exit();
 }
 
+if (isset($_SESSION['players']) || isset($_SESSION['game'])) {
+    $gameController = new GameController($_POST);
+    exit();
+}

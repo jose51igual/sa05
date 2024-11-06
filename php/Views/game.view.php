@@ -18,7 +18,6 @@
 <?php include_once $_SERVER['DOCUMENT_ROOT'].'/../Views/partials/error.view.php'  ?>
  <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
     <?php include_once $_SERVER['DOCUMENT_ROOT'].'/../Views/partials/board.view.php'  ?>
-
 </form>
 <form action="" method="GET">
     <button type="submit" name="action" value="save">Guardar partida</button>

@@ -3,7 +3,7 @@
         'name' => 'joc4enratlla/joc4enratlla',
         'pretty_version' => 'dev-develop',
         'version' => 'dev-develop',
-        'reference' => '42ef965eec4010b69fb68df5e9d7196d87e66a57',
+        'reference' => '0094135e002a3f62ce7d7fda9716b121376998b8',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'joc4enratlla/joc4enratlla' => array(
             'pretty_version' => 'dev-develop',
             'version' => 'dev-develop',
-            'reference' => '42ef965eec4010b69fb68df5e9d7196d87e66a57',
+            'reference' => '0094135e002a3f62ce7d7fda9716b121376998b8',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

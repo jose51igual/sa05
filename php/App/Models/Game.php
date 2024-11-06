@@ -212,4 +212,8 @@ class Game implements JocInterface{
         return unserialize($_SESSION['game']);
     }
 
+    public static function restoreDB(string $game){
+        return unserialize($game);
+    }
+
 }

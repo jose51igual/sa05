@@ -15,7 +15,7 @@ use Joc4enRatlla\Services\FunctionsDB;
  *
  * Esta clase controla el juego del Cuatro en Ralla.
  */
-class GameController{
+class GameController {
 
     /**
      * El juego del Cuatro en Ralla.
@@ -45,14 +45,16 @@ class GameController{
      *
      * @param array $request Los datos de la petición.
      */
-    public function __construct($request=null){
+    public function __construct($request = null) {
         $this->logger = new Logger('loggerJuego');
         $this->logger->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/game.log", Level::Info));
 
         $this->loggerErrors = new Logger('loggerErrores');
         $this->loggerErrors->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/errors.log", Level::Error));
+
         $this->functionsDB = new FunctionsDB();
         $this->play($request);
+
     }
 
     /**
@@ -62,13 +64,12 @@ class GameController{
      * 
      * @return void
      */
-    public function play(array $request){
-
+    public function play(array $request) {
         $this->startGame();
 
-        try{
+        try {
             $this->newMovement($request);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             $this->loggerErrors->error($e->getMessage());
         }
 
@@ -82,29 +83,38 @@ class GameController{
         $_SESSION['game'] = $this->game->save();
         $_SESSION['scores'] = $scores;
 
-        loadView('game',compact('board','players','winner','scores','nextPlayer'));
+        loadView('game', compact('board', 'players', 'winner', 'scores', 'nextPlayer'));
     }
+
 
     /**
      * Inicia el juego.
      * 
      * @return void
      */
-    private function startGame(){
-        if(isset($_SESSION['game']) && isset($_SESSION['players'])){
+    private function startGame() {
+        if (isset($_SESSION['game'])) {
             $this->game = Game::restore();
-        }else{
+        }else {
+            $this->createNewGame();
+        }
+    }
 
-            if(isset($_SESSION['players'])){
-                $players = unserialize($_SESSION['players']);
-                $player1 = $players['player1'];
-                $player2 = $players['player2'];
-            }else{
+    /**
+     * Inicializa un nuevo juego.
+     * 
+     * @return void
+     */
+    private function createNewGame() {
+        if (isset($_SESSION['players'])) {
+            $players = unserialize($_SESSION['players']);
+            $player1 = $players['player1'];
+            $player2 = $players['player2'];
+        } else {
             $player1 = new Player('Jugador 1', 'red');
             $player2 = new Player('Jugador 2', 'blue');
-            }
-            $this->game = new Game($player1, $player2);
         }
+        $this->game = new Game($player1, $player2);
     }
 
     /**
@@ -126,19 +136,24 @@ class GameController{
             if ($this->game->getWinner() !== null) {
                 $_SESSION['errors'][] = 'El juego ya ha terminado.';
                 $this->loggerErrors->error('Intent de moviment después de que el joc haja acabat.');
+
             }elseif(!$this->game->getBoard()->isValidMove($column)){
                 $_SESSION['errors'][] = 'Columna plena';
                 $this->loggerErrors->error('Intent de moviment en una columna plena.');
+
             } elseif($column < 0 || $column > Board::COLUMNS-1){
                 $_SESSION['errors'][] = 'Columna no valida';
                 $this->loggerErrors->error('Intent de moviment en una columna no válida.');
+
             } else {
                 $coords = [];
                 if($this->game->getPlayers()[2]->isAutomatic()){
                     $coords = ($this->game->getNextPlayer() === 1) ? $this->game->play($column) : $this->game->playAutomatic();
+
                 } else {
                     $coords = $this->game->play($column);
                     $this->logger->info('Jugador '.$this->game->getPlayers()[$this->game->getNextPlayer()]->getName().' ha jugado en la columna '.$column);
+
                 }
                 if($this->game->getBoard()->checkWin($coords)){
                     $this->game->setWinner($this->game->getPlayers()[$this->game->getNextPlayer() === 1 ? 2 : 1]);
@@ -156,9 +171,5 @@ class GameController{
      */
     public function getGame(){
         return $this->game;
-    }
-
-    public function saveGame($gameData, $userId) {
-        return $this->functionsDB->saveJoc($gameData, $userId);
     }
 }
