@@ -1,1 +1,3 @@
 [2024-11-03T00:53:06.338502+00:00] loggerErrores.ERROR: Intent de moviment en una columna plena. [] []
+[2024-11-06T19:22:50.129879+00:00] loggerErrores.ERROR: Error en el envío del formulari, falten dades [] []
+[2024-11-06T19:22:53.889477+00:00] loggerErrores.ERROR: Els noms dels jugadors han de ser diferents [] []
