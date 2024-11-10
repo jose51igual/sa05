@@ -5,9 +5,7 @@ use Joc4enRatlla\Exceptions\colorsIgualsException;
 use Joc4enRatlla\Exceptions\faltenDadesException;
 use Joc4enRatlla\Exceptions\nomsIgualsException;
 use Joc4enRatlla\Models\Player;
-use Monolog\Level;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+
 
 /**
  * Clase JugadorController
@@ -23,16 +21,10 @@ class JugadorController {
      */
     private array $players;
 
-    /**
-     * Logger de errores.
-     *
-     * @var Logger $loggerErrors
-     */
-    private Logger $loggerErrors;
+
 
     public function __construct($request = null) {
-        $this->loggerErrors = new Logger('loggerErrores');
-        $this->loggerErrors->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/errors.log", Level::Error));
+
         try {
             $this->setPlayers($request);
         } catch (\Throwable $th) {
@@ -68,7 +60,6 @@ class JugadorController {
                 throw new nomsIgualsException();
             }
         } catch (faltenDadesException | colorsIgualsException | nomsIgualsException $e) {
-            $this->loggerErrors->error($e->getMessage());
             $_SESSION['errors'][] = $e->getMessage();
             loadView('jugador');
             return;

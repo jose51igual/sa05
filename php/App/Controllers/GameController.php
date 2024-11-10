@@ -24,30 +24,12 @@ class GameController{
     private Game $game;
 
     /**
-     * Logger del juego.
-     *
-     * @var Logger $logger
-     */
-    private Logger $logger;
-
-    /**
-     * Logger de errores.
-     *
-     * @var Logger $loggerErrors
-     */
-    private Logger $loggerErrors;
-
-    /**
      * Constructor de la clase GameController.
      *
      * @param array $request Los datos de la petición.
      */
     public function __construct($request=null){
-        $this->logger = new Logger('loggerJuego');
-        $this->logger->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/game.log", Level::Info));
 
-        $this->loggerErrors = new Logger('loggerErrores');
-        $this->loggerErrors->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . "/../logs/errors.log", Level::Error));
         $this->play($request);
     }
 
@@ -65,7 +47,7 @@ class GameController{
         try{
             $this->newMovement($request);
         }catch(Exception $e){
-            $this->loggerErrors->error($e->getMessage());
+            $_SESSION['errors'][] = $e->getMessage();
         }
 
         $board = $this->game->getBoard();
@@ -120,24 +102,19 @@ class GameController{
 
             if ($this->game->getWinner() !== null) {
                 $_SESSION['errors'][] = 'El juego ya ha terminado.';
-                $this->loggerErrors->error('Intent de moviment después de que el joc haja acabat.');
             }elseif(!$this->game->getBoard()->isValidMove($column)){
                 $_SESSION['errors'][] = 'Columna plena';
-                $this->loggerErrors->error('Intent de moviment en una columna plena.');
             } elseif($column < 0 || $column > Board::COLUMNS-1){
                 $_SESSION['errors'][] = 'Columna no valida';
-                $this->loggerErrors->error('Intent de moviment en una columna no válida.');
             } else {
                 $coords = [];
                 if($this->game->getPlayers()[2]->isAutomatic()){
                     $coords = ($this->game->getNextPlayer() === 1) ? $this->game->play($column) : $this->game->playAutomatic();
                 } else {
                     $coords = $this->game->play($column);
-                    $this->logger->info('Jugador '.$this->game->getPlayers()[$this->game->getNextPlayer()]->getName().' ha jugado en la columna '.$column);
                 }
                 if($this->game->getBoard()->checkWin($coords)){
                     $this->game->setWinner($this->game->getPlayers()[$this->game->getNextPlayer() === 1 ? 2 : 1]);
-                    $this->logger->info('Jugador '.$this->game->getPlayers()[$this->game->getNextPlayer() === 1 ? 2 : 1]->getName().' ha ganado');
                 }
             }
         }
