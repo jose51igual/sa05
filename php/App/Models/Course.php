@@ -9,6 +9,6 @@ class Course
    public string $course = '',
    public int $familyId = 0,
    public string $vliteral = '',
-   public string $cliteral = '' ) 
+   public string $cliteral = '' )
    {}
 }

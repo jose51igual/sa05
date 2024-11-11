@@ -27,7 +27,7 @@ class CourseController extends ApiController
     {
         $stmt = $this->db->prepare("SELECT * FROM courses WHERE id = :id");
         $stmt->bindParam(':id', $id);
-        $record = $stmt->fetch();
+        $record = $stmt->fetch(PDO::FETCH_CLASS);
 
         if ($record) {
             $this->jsonResponse(201,$record);
