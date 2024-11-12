@@ -2,6 +2,7 @@
 namespace BatoiBook\Controllers\Api;
 
 use BatoiBook\Services\DBService;
+use PDOException;
 
 class DBController{
     public function __construct()

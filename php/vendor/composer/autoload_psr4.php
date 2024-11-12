@@ -6,5 +6,10 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/src'),
+    'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
+    'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
+    'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
+    'BatoiBook\\' => array($baseDir . '/App'),
 );

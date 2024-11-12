@@ -8,7 +8,7 @@ class Book
 {
    public function __construct(
    public int $id,
-   public int $userId = null,
+   public ?int $userId = null,
    public string $moduleCode = '',
    public string $publisher = '',
    public float $price = 0.0,
@@ -16,7 +16,7 @@ class Book
    public string $status = '',
    public string $photo = '',
    public string $comments = '',
-   public DateTime $soldDate = null
+   public ?DateTime $soldDate = null
    )
    {}
 }

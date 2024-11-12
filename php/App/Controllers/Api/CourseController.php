@@ -1,5 +1,6 @@
 <?php
 namespace BatoiBook\Controllers\Api;
+
 use \PDO;
 use \PDOException;
 use BatoiBook\Controllers\Api\ApiController;
@@ -39,7 +40,12 @@ class CourseController extends ApiController
     public function create(array $data): int
     {
         try {
-            //TODO: Implementar inserció
+            $stmt = $this->db->prepare("INSERT INTO courses (code,cliteral,vliteral,courseId) VALUES (:code,:cliteral,:vliteral,:courseId)");
+            $stmt->bindParam(':code', $data['code']);
+            $stmt->bindParam(':cliteral', $data['cliteral']);
+            $stmt->bindParam(':vliteral', $data['vliteral']);
+            $stmt->bindParam(':courseId', $data['courseId']);
+            $stmt->execute();
             return $this->db->lastInsertId();
          } catch (PDOException $e) {
             $this->errorResponse(400,"Failed to create record: " . $e->getMessage());
@@ -49,9 +55,13 @@ class CourseController extends ApiController
     public function update(int $id, array $data): void
     {
         try {
-            //TODO: Implementar actualització
-
+            $stmt = $this->db->prepare("UPDATE courses SET cliteral = :cliteral, vliteral = :vliteral, courseId = :courseId WHERE code = :code");
+            $stmt->bindParam(':code', $data['code']);
+            $stmt->bindParam(':cliteral', $data['cliteral']);
+            $stmt->bindParam(':vliteral', $data['vliteral']);
+            $stmt->bindParam(':courseId', $data['courseId']);
             $stmt->execute();
+
             if ($stmt->rowCount() > 0) {
                 $this->jsonResponse(201,["message" => "Record updated successfully"]);
             } else {
@@ -64,11 +74,18 @@ class CourseController extends ApiController
 
     public function delete(int $id): void
     {
-        //TODO: Implementar eliminació
-        if ($stmt->rowCount() > 0) {
-            $this->jsonResponse(201,["message" => "Record deleted successfully"]);
-        } else {
-            $this->errorResponse("Record not found", 404);
+        try{
+            $stmt = $this->db->prepare("DELETE FROM courses WHERE code = :code");
+            $stmt->bindParam(':code', $id);
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
+                $this->jsonResponse(201,["message" => "Record deleted successfully"]);
+            } else {
+                $this->errorResponse("Record not found", 404);
+            }
+        }catch(PDOException $e){
+            $this->errorResponse(400,"Failed to delete record: " . $e->getMessage());
         }
+        
     }
 }
