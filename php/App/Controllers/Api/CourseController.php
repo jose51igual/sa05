@@ -5,7 +5,6 @@ use \PDO;
 use \PDOException;
 use BatoiBook\Controllers\Api\ApiController;
 use BatoiBook\Services\DBService;
-use BatoiBook\Models\Course;
 
 class CourseController extends ApiController
 {
@@ -19,7 +18,7 @@ class CourseController extends ApiController
     {
         $stmt = $this->db->prepare("SELECT * FROM courses");
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, Course::class);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
         $this->jsonResponse(201,$stmt->fetchAll());
     }

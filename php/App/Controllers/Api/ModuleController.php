@@ -5,7 +5,6 @@ use \PDO;
 use \PDOException;
 use BatoiBook\Controllers\Api\ApiController;
 use BatoiBook\Services\DBService;
-use BatoiBook\Models\Module;
 
 class ModuleController extends ApiController
 {
@@ -20,7 +19,7 @@ class ModuleController extends ApiController
     {
         $stmt = $this->db->prepare("SELECT * FROM modules");
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, Module::class);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
         $this->jsonResponse(201, $stmt->fetchAll());
     }
@@ -30,7 +29,7 @@ class ModuleController extends ApiController
         $stmt = $this->db->prepare("SELECT * FROM modules WHERE code = :code");
         $stmt->bindParam(':code', $id);
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, Module::class);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $record = $stmt->fetch();
 
         if ($record) {

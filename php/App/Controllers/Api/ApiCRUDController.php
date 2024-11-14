@@ -2,7 +2,7 @@
 
 namespace BatoiBook\Controllers\Api;
 
-abstract class ApiCRUDthis extends ApiController
+abstract class ApiCRUDController extends ApiController
 {
     public function __construct()
     {
