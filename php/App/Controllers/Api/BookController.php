@@ -42,11 +42,16 @@ class BookController extends ApiController
     public function create(array $data): int
     {
         try {
-            $stmt = $this->db->prepare("INSERT INTO books (userId,moduleCode, publisher, price, pages, status, photo, comments,soldDate ) VALUES (:title, :author, :isbn, :published_date)");
-            $stmt->bindParam(':title', $data['title']);
-            $stmt->bindParam(':author', $data['author']);
-            $stmt->bindParam(':isbn', $data['isbn']);
-            $stmt->bindParam(':published_date', $data['published_date']);
+            $stmt = $this->db->prepare("INSERT INTO books (userId,moduleCode, publisher, price, pages, status, photo, comments,soldDate ) VALUES (:userId, :moduleCode, :publisher, :price, :pages, :status, :photo, :comments, :soldDate)");
+            $stmt->bindParam(':userId', $data['userId']);
+            $stmt->bindParam(':moduleCode', $data['moduleCode']);
+            $stmt->bindParam(':publisher', $data['publisher']);
+            $stmt->bindParam(':price', $data['price']);
+            $stmt->bindParam(':pages', $data['pages']);
+            $stmt->bindParam(':status', $data['status']);
+            $stmt->bindParam(':photo', $data['photo']);
+            $stmt->bindParam(':comments', $data['comments']);
+            $stmt->bindParam(':soldDate', $data['soldDate']);
             $stmt->execute();
             return $this->db->lastInsertId();
         } catch (PDOException $e) {
@@ -57,12 +62,15 @@ class BookController extends ApiController
     public function update(int $id, array $data): void
     {
         try {
-            $stmt = $this->db->prepare("UPDATE books SET title = :title, author = :author, isbn = :isbn, published_date = :published_date WHERE id = :id");
+            $stmt = $this->db->prepare("UPDATE books SET moduleCode = :moduleC , publisher = :publisher , price = :price , pages = :pages, status = :status , comments = :comments , soldDate = :soldDate  WHERE id = :id");
             $stmt->bindParam(':id', $id);
-            $stmt->bindParam(':title', $data['title']);
-            $stmt->bindParam(':author', $data['author']);
-            $stmt->bindParam(':isbn', $data['isbn']);
-            $stmt->bindParam(':published_date', $data['published_date']);
+            $stmt->bindParam(':moduleC', $data['moduleCode']);
+            $stmt->bindParam(':publisher', $data['publisher']);
+            $stmt->bindParam(':price', $data['price']);
+            $stmt->bindParam(':pages', $data['pages']);
+            $stmt->bindParam(':status', $data['status']);
+            $stmt->bindParam(':comments', $data['comments']);
+            $stmt->bindParam(':soldDate', $data['soldDate']);
             $stmt->execute();
 
             if ($stmt->rowCount() > 0) {

@@ -40,11 +40,11 @@ class CourseController extends ApiController
     public function create(array $data): int
     {
         try {
-            $stmt = $this->db->prepare("INSERT INTO courses (code,cliteral,vliteral,courseId) VALUES (:code,:cliteral,:vliteral,:courseId)");
-            $stmt->bindParam(':code', $data['code']);
-            $stmt->bindParam(':cliteral', $data['cliteral']);
+            $stmt = $this->db->prepare("INSERT INTO courses (cycle, idFamily, vliteral, cliteral) VALUES (:cycle, :idFamily, :vliteral, :cliteral)");
+            $stmt->bindParam(':cycle', $data['cycle']);
+            $stmt->bindParam(':idFamily', $data['idFamily']);
             $stmt->bindParam(':vliteral', $data['vliteral']);
-            $stmt->bindParam(':courseId', $data['courseId']);
+            $stmt->bindParam(':cliteral', $data['cliteral']);
             $stmt->execute();
             return $this->db->lastInsertId();
          } catch (PDOException $e) {
@@ -55,11 +55,12 @@ class CourseController extends ApiController
     public function update(int $id, array $data): void
     {
         try {
-            $stmt = $this->db->prepare("UPDATE courses SET cliteral = :cliteral, vliteral = :vliteral, courseId = :courseId WHERE code = :code");
-            $stmt->bindParam(':code', $data['code']);
-            $stmt->bindParam(':cliteral', $data['cliteral']);
+            $stmt = $this->db->prepare("UPDATE courses SET cycle = :cycle , idFamily = :idFamily, vliteral = :vliteral, cliteral = :cliteral WHERE id = :id");
+            $stmt->bindParam(':cycle', $data['cycle']);
+            $stmt->bindParam(':idFamily', $data['idFamily']);
             $stmt->bindParam(':vliteral', $data['vliteral']);
-            $stmt->bindParam(':courseId', $data['courseId']);
+            $stmt->bindParam(':cliteral', $data['cliteral']);
+            $stmt->bindParam(':id', $id);
             $stmt->execute();
 
             if ($stmt->rowCount() > 0) {
@@ -75,7 +76,7 @@ class CourseController extends ApiController
     public function delete(int $id): void
     {
         try{
-            $stmt = $this->db->prepare("DELETE FROM courses WHERE code = :code");
+            $stmt = $this->db->prepare("DELETE FROM courses WHERE id = :code");
             $stmt->bindParam(':code', $id);
             $stmt->execute();
             if ($stmt->rowCount() > 0) {

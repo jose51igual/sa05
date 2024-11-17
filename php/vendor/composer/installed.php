@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'batoibooks/php',
+        'name' => 'batoibook/batoibook',
         'pretty_version' => 'dev-develop',
         'version' => 'dev-develop',
-        'reference' => 'c8504bd083fa0ccf012c0d21820c27d7551472af',
+        'reference' => '0a4ac7ea61a3a8b270d3187c85ec0959e2aaec62',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        'batoibooks/php' => array(
+        'batoibook/batoibook' => array(
             'pretty_version' => 'dev-develop',
             'version' => 'dev-develop',
-            'reference' => 'c8504bd083fa0ccf012c0d21820c27d7551472af',
+            'reference' => '0a4ac7ea61a3a8b270d3187c85ec0959e2aaec62',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
